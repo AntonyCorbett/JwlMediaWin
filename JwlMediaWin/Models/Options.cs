@@ -4,11 +4,14 @@
     {
         public Options()
         {
-            FixerEnabled = true;
+            FixerEnabledJwLib = true;
+            FixerEnabledJwLibSign = false;
             MediaWindowOnTop = true;
         }
 
-        public bool FixerEnabled { get; set; }
+        public bool FixerEnabledJwLib { get; set; }
+
+        public bool FixerEnabledJwLibSign { get; set; }
 
         public bool MediaWindowOnTop { get; set; }
     }

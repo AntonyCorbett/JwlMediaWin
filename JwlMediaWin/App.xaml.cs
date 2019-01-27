@@ -1,14 +1,10 @@
-﻿using System;
-using System.Windows.Navigation;
-using CommonServiceLocator;
-using JwlMediaWin.ViewModel;
-
-namespace JwlMediaWin
+﻿namespace JwlMediaWin
 {
     using System.IO;
     using System.Threading;
     using System.Windows;
     using Hardcodet.Wpf.TaskbarNotification;
+    using JwlMediaWin.ViewModel;
     using Serilog;
 
     /// <summary>

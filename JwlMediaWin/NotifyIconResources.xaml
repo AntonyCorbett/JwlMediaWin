@@ -10,8 +10,11 @@
     -->
     
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
-        <MenuItem Header="Enable Fix" 
-                  IsChecked="{Binding IsFixEnabled}"
+        <MenuItem Header="Enable Fix - JW Library" 
+                  IsChecked="{Binding IsFixEnabledJwLib}"
+                  IsCheckable="true" />
+        <MenuItem Header="Enable Fix - JW Library Sign Language" 
+                  IsChecked="{Binding IsFixEnabledJwLibSign}"
                   IsCheckable="true" />
         <MenuItem Header="Keep on Top" 
                   IsChecked="{Binding IsKeepOnTopEnabled}"

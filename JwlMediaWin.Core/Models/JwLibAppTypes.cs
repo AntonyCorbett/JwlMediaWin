@@ -2,7 +2,7 @@
 {
     public enum JwLibAppTypes
     {
-        Unknown,
+        None,
         JwLibrary,
         JwLibrarySignLanguage
     }

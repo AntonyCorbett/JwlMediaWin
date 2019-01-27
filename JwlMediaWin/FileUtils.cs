@@ -46,14 +46,14 @@
         /// <returns>User Options file path.</returns>
         public static string GetUserOptionsFilePath(int optionsVersion)
         {
-            var result = Path.Combine(
+            var folder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 AppNamePathSegment,
-                optionsVersion.ToString(),
-                OptionsFileName);
+                optionsVersion.ToString());
 
-            CreateDirectory(result);
-            return result;
+            CreateDirectory(folder);
+
+            return Path.Combine(folder, OptionsFileName);
         }
     }
 }

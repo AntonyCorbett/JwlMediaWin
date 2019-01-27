@@ -57,8 +57,10 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Fixer.cs" />
+    <Compile Include="FixerRunner.cs" />
     <Compile Include="Models\FindWindowResult.cs" />
     <Compile Include="Models\FixerStatus.cs" />
+    <Compile Include="Models\FixerStatusEventArgs.cs" />
     <Compile Include="Models\JwLibAppTypes.cs" />
     <Compile Include="Models\MediaAndCoreWindows.cs" />
     <Compile Include="NativeMethods.cs" />

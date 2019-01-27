@@ -10,7 +10,7 @@
     using WindowsInput.Native;
 
     // ReSharper disable once UnusedMember.Global
-    public class Fixer
+    internal class Fixer
     {
         private const string JwLibProcessName = "JWLibrary";
         private const string JwLibCaption = "JW Library";
@@ -21,28 +21,15 @@
         private AutomationElement _cachedDesktopElement;
         private MediaAndCoreWindows _cachedWindowElements;
 
-        public Fixer()
-        {
-            TopMost = true;
-        }
-
-        /// <summary>
-        /// Sets a value indicating whether the JWL media window should be 'always on top'.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if top most; otherwise, <c>false</c>.
-        /// </value>
-        // ReSharper disable once MemberCanBePrivate.Global
-        public bool TopMost { private get; set; }
-
         /// <summary>
         /// Executes the "fixer". Finds the JWL media window and fixes it.
         /// </summary>
         /// <param name="appType">JWL application type.</param>
+        /// <param name="topMost">Whether the media window should always be on top.</param>
         /// <returns><see cref="FixerStatus"/></returns>
         /// <exception cref="Exception">Expected app type!</exception>
         // ReSharper disable once UnusedMember.Global
-        public FixerStatus Execute(JwLibAppTypes appType)
+        public FixerStatus Execute(JwLibAppTypes appType, bool topMost)
         {
             try
             {
@@ -51,7 +38,7 @@
 
                 switch (appType)
                 {
-                    case JwLibAppTypes.Unknown:
+                    case JwLibAppTypes.None:
                         throw new Exception("Expected app type!");
 
                     default:
@@ -67,7 +54,7 @@
                         break;
                 }
 
-                return ExecuteInternal(appType, processName, caption);
+                return ExecuteInternal(appType, topMost, processName, caption);
             }
             catch (ElementNotAvailableException)
             {
@@ -107,7 +94,7 @@
             {
                 default:
                 // ReSharper disable once RedundantCaseLabel
-                case JwLibAppTypes.Unknown:
+                case JwLibAppTypes.None:
                     return false;
 
                 case JwLibAppTypes.JwLibrary:
@@ -152,7 +139,11 @@
             return windowPattern.Current.IsTopmost;
         }
 
-        private FixerStatus ExecuteInternal(JwLibAppTypes appType, string processName, string caption)
+        private FixerStatus ExecuteInternal(
+            JwLibAppTypes appType, 
+            bool topMost,
+            string processName, 
+            string caption)
         {
             var result = new FixerStatus { FindWindowResult = GetMediaAndCoreWindow(appType, processName, caption) };
 
@@ -184,7 +175,7 @@
                 return result;
             }
 
-            var insertAfterValue = TopMost
+            var insertAfterValue = topMost
                 ? new IntPtr(-1)
                 : new IntPtr(0);
 
