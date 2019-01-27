@@ -10,3 +10,4 @@ JwlMediaWin changes the behaviour of the JW Library media window so that it is n
 application opens a window on the media display. The JW Library application code is not modified, rather 
 UI Automation is used to transform the media window (i.e. it performs functions you _could_ do manually).
 
+"JW Library" is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania.
