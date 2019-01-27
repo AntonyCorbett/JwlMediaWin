@@ -97,6 +97,7 @@
     <Compile Include="Models\Options.cs" />
     <Compile Include="Services\IOptionsService.cs" />
     <Compile Include="Services\OptionsService.cs" />
+    <Compile Include="Services\StatusMessageGenerator.cs" />
     <Compile Include="VersionDetection.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

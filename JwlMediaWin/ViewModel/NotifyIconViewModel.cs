@@ -8,11 +8,13 @@
     using JwlMediaWin.Core;
     using JwlMediaWin.Core.Models;
     using JwlMediaWin.Services;
+    using Serilog;
 
     internal class NotifyIconViewModel : ViewModelBase
     {
         private readonly IOptionsService _optionsService;
         private readonly FixerRunner _fixerRunner = new FixerRunner();
+        private readonly StatusMessageGenerator _statusMessageGenerator = new StatusMessageGenerator();
 
         public NotifyIconViewModel(IOptionsService optionsService)
         {
@@ -22,6 +24,8 @@
             ShowHelpPageCommand = new RelayCommand(ShowHelpPage);
             
             ResetFixer();
+
+            _fixerRunner.StatusEvent += HandleFixerRunnerStatusEvent;
 
             Task.Run(() => { _fixerRunner.Start(); });
         }
@@ -44,12 +48,15 @@
                     _optionsService.Options.FixerEnabledJwLib = value;
                     RaisePropertyChanged();
 
+                    Log.Logger.Information(value
+                        ? "Enabled fix for JW Lib"
+                        : "Disabled fix for JW Lib");
+
                     if (value)
                     {
                         IsFixEnabledJwLibSign = false;
                     }
-
-                    _optionsService.Save();
+                    
                     ResetFixer();
                 }
             }
@@ -65,12 +72,15 @@
                     _optionsService.Options.FixerEnabledJwLibSign = value;
                     RaisePropertyChanged();
 
+                    Log.Logger.Information(value
+                        ? "Enabled fix for JW Lib Sign Language"
+                        : "Disabled fix for JW Lib Sign Language");
+
                     if (value)
                     {
                         IsFixEnabledJwLib = false;
                     }
                     
-                    _optionsService.Save();
                     ResetFixer();
                 }
             }
@@ -86,7 +96,10 @@
                     _optionsService.Options.MediaWindowOnTop = value;
                     RaisePropertyChanged();
 
-                    _optionsService.Save();
+                    Log.Logger.Information(value
+                        ? "Enabled keep on top"
+                        : "Disabled on top");
+                    
                     ResetFixer();
                 }
             }
@@ -99,6 +112,8 @@
 
         private void ResetFixer()
         {
+            _optionsService.Save();
+
             if (_optionsService.Options.FixerEnabledJwLib)
             {
                 _fixerRunner.AppType = JwLibAppTypes.JwLibrary;
@@ -113,6 +128,32 @@
             }
 
             _fixerRunner.KeepOnTop = _optionsService.Options.MediaWindowOnTop;
+        }
+
+        private string GetAppName(JwLibAppTypes appType)
+        {
+            if (appType == JwLibAppTypes.JwLibrary)
+            {
+                return "JW Library";
+            }
+
+            if (appType == JwLibAppTypes.JwLibrarySignLanguage)
+            {
+                return "JW Library Sign Language";
+            }
+
+            return "Unknown";
+        }
+
+        private void HandleFixerRunnerStatusEvent(object sender, FixerStatusEventArgs e)
+        {
+            var appName = GetAppName(_fixerRunner.AppType);
+            var msg = _statusMessageGenerator.Generate(e.Status, appName);
+
+            if (msg != null)
+            {
+                Log.Logger.Information(msg);
+            }
         }
     }
 }
