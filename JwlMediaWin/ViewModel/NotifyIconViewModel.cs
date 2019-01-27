@@ -5,8 +5,11 @@
     using System.Windows;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using GalaSoft.MvvmLight.Messaging;
+    using Hardcodet.Wpf.TaskbarNotification;
     using JwlMediaWin.Core;
     using JwlMediaWin.Core.Models;
+    using JwlMediaWin.PubSubMessages;
     using JwlMediaWin.Services;
     using Serilog;
 
@@ -153,6 +156,16 @@
             if (msg != null)
             {
                 Log.Logger.Information(msg);
+
+                if (e.Status.IsFixed)
+                {
+                    Messenger.Default.Send(new ShowBalloonTipMessage
+                    {
+                        IconType = BalloonIcon.Info,
+                        Title = $"{appName}",
+                        Message = msg
+                    });
+                }
             }
         }
     }

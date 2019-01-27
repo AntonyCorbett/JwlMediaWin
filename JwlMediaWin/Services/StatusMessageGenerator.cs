@@ -12,35 +12,35 @@
 
             if (results.ErrorIsTransitioning)
             {
-                result = $"{appName} is transitioning";
+                result = $"{appName} is transitioning.";
             }
             else if (results.ErrorUnknown)
             {
-                result = "Unknown error";
+                result = "Unknown error.";
             }
             else if (!results.FindWindowResult.JwlRunning)
             {
-                result = $"{appName} is not running";
+                result = $"{appName} is not running.";
             }
             else if (!results.FindWindowResult.FoundMediaWindow)
             {
-                result = $"Could not find {appName} media window";
+                result = $"Could not find {appName} media window.";
             }
             else if (results.FindWindowResult.IsAlreadyFixed)
             {
-                result = $"Found {appName} media window. Already fixed";
+                result = $"Found {appName} media window. Already fixed.";
             }
             else if (results.IsFixed)
             {
-                result = $"Found {appName} media window and fixed";
+                result = $"Found {appName} media window and fixed it.";
             }
             else if (!results.CoreWindowFocused)
             {
-                result = "Could not fix - core window not focused";
+                result = "Could not fix - core window not focused.";
             }
             else
             {
-                result = "Could not fix - core window focused";
+                result = "Could not fix - core window focused.";
             }
 
             if (result.Equals(_previousMessage))

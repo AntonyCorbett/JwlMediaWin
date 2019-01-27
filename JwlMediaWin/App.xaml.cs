@@ -3,7 +3,9 @@
     using System.IO;
     using System.Threading;
     using System.Windows;
+    using GalaSoft.MvvmLight.Messaging;
     using Hardcodet.Wpf.TaskbarNotification;
+    using JwlMediaWin.PubSubMessages;
     using JwlMediaWin.ViewModel;
     using Serilog;
 
@@ -33,6 +35,7 @@
                 if (_notifyIcon != null)
                 {
                     _notifyIcon.DataContext = ViewModelLocator.MainViewModel;
+                    Messenger.Default.Register<ShowBalloonTipMessage>(this, OnShowBalloonTipMessage);
                 }
             }
         }
@@ -66,6 +69,11 @@
         {
             _appMutex = new Mutex(true, _appString, out var newInstance);
             return !newInstance;
+        }
+
+        private void OnShowBalloonTipMessage(ShowBalloonTipMessage message)
+        {
+            _notifyIcon.ShowBalloonTip(message.Title, message.Message, message.IconType);
         }
     }
 }
