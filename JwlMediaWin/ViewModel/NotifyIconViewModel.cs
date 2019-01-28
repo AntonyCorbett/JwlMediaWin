@@ -19,6 +19,8 @@
         private readonly FixerRunner _fixerRunner = new FixerRunner();
         private readonly StatusMessageGenerator _statusMessageGenerator = new StatusMessageGenerator();
 
+        private bool _isFixed;
+
         public NotifyIconViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
@@ -41,6 +43,7 @@
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public RelayCommand ShowHelpPageCommand { get; }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public bool IsFixEnabledJwLib
         {
             get => _optionsService.Options.FixerEnabledJwLib;
@@ -65,6 +68,7 @@
             }
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public bool IsFixEnabledJwLibSign
         {
             get => _optionsService.Options.FixerEnabledJwLibSign;
@@ -89,6 +93,7 @@
             }
         }
 
+        // ReSharper disable once UnusedMember.Global
         public bool IsKeepOnTopEnabled
         {
             get => _optionsService.Options.MediaWindowOnTop;
@@ -131,25 +136,32 @@
             }
 
             _fixerRunner.KeepOnTop = _optionsService.Options.MediaWindowOnTop;
+
+            if (_isFixed)
+            {
+                ShowBalloonMsg(BalloonIcon.Warning, "Restart JW Library for changes to take effect.");
+            }
         }
 
         private string GetAppName(JwLibAppTypes appType)
         {
-            if (appType == JwLibAppTypes.JwLibrary)
+            switch (appType)
             {
-                return "JW Library";
-            }
+                case JwLibAppTypes.JwLibrary:
+                    return "JW Library";
 
-            if (appType == JwLibAppTypes.JwLibrarySignLanguage)
-            {
-                return "JW Library Sign Language";
-            }
+                case JwLibAppTypes.JwLibrarySignLanguage:
+                    return "JW Library Sign Language";
 
-            return "Unknown";
+                default:
+                    return "Unknown";
+            }
         }
 
         private void HandleFixerRunnerStatusEvent(object sender, FixerStatusEventArgs e)
         {
+            _isFixed = e.Status.IsFixed || (e.Status.FindWindowResult != null && e.Status.FindWindowResult.IsAlreadyFixed);
+
             var appName = GetAppName(_fixerRunner.AppType);
             var msg = _statusMessageGenerator.Generate(e.Status, appName);
 
@@ -159,14 +171,19 @@
 
                 if (e.Status.IsFixed)
                 {
-                    Messenger.Default.Send(new ShowBalloonTipMessage
-                    {
-                        IconType = BalloonIcon.Info,
-                        Title = $"{appName}",
-                        Message = msg
-                    });
+                    ShowBalloonMsg(BalloonIcon.Info, msg);
                 }
             }
+        }
+
+        private void ShowBalloonMsg(BalloonIcon icon, string msg)
+        {
+            Messenger.Default.Send(new ShowBalloonTipMessage
+            {
+                IconType = icon,
+                Title = $"{GetAppName(_fixerRunner.AppType)}",
+                Message = msg
+            });
         }
     }
 }
