@@ -24,7 +24,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\JwlMediaFix\JwMediaFix.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\JwlMediaWin.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>SA1101;SA1309;SA1633;SA1652</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\JwlMediaWin.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>SA1101;SA1309;SA1633;SA1652</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
