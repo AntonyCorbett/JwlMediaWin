@@ -2,6 +2,8 @@
 
 TrayIcon utility to modify JW Library media window.
 
+![Main Window](http://cv8.org.uk/soundbox/JwlMediaWin/Images/JwlMediaWin.png)
+
 Some find the JW Library media window a little difficult to manage when using 3rd-party applications such as
 VLC and OnlyM to display images or videos that aren't included in JW Library. The media window is sometimes lost 
 during transition between applications and occasionally the year text disappears.
