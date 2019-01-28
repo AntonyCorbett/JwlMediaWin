@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwlMediaWin", "JwlMediaWin\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{0B0EDFB6-2E33-4A3E-A9CF-84A9C51BA0EE}"
 	ProjectSection(SolutionItems) = preProject
+		JwlMediaWin.ruleset = JwlMediaWin.ruleset
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
