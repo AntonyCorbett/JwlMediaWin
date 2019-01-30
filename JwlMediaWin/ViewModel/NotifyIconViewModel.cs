@@ -1,4 +1,6 @@
-﻿namespace JwlMediaWin.ViewModel
+﻿using System;
+
+namespace JwlMediaWin.ViewModel
 {
     using System.Diagnostics;
     using System.Threading.Tasks;
@@ -20,6 +22,7 @@
         private readonly StatusMessageGenerator _statusMessageGenerator = new StatusMessageGenerator();
 
         private bool _isFixed;
+        private DateTime _restartTipLastShow = DateTime.MinValue;
 
         public NotifyIconViewModel(IOptionsService optionsService)
         {
@@ -137,10 +140,16 @@
 
             _fixerRunner.KeepOnTop = _optionsService.Options.MediaWindowOnTop;
 
-            if (_isFixed)
+            if (_isFixed && ShouldShowRestart())
             {
+                _restartTipLastShow = DateTime.UtcNow;
                 ShowBalloonMsg(BalloonIcon.Warning, "Restart JW Library for changes to take effect.");
             }
+        }
+
+        private bool ShouldShowRestart()
+        {
+            return (DateTime.UtcNow - _restartTipLastShow).TotalMinutes > 1;
         }
 
         private string GetAppName(JwLibAppTypes appType)
