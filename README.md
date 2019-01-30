@@ -1,4 +1,4 @@
-# JwlMediaWin
+# JwlMediaWin <img src="https://ci.appveyor.com/api/projects/status/iflm7hmfrl4ffqjw?svg=true">
 
 TrayIcon utility to modify JW Library media window.
 
