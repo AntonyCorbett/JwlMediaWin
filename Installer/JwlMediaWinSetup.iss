@@ -32,8 +32,9 @@ DisableWelcomePage=false
 SetupLogging=True
 RestartApplications=False
 CloseApplications=False
-AppMutex=JwlMediaWindowFixSoundBox
+;AppMutex=JwlMediaWindowFixSoundBox
 DisableProgramGroupPage=yes
+CloseApplications=yes
 
 [Files]
 Source: "JwlMediaWin\bin\Release\CommonServiceLocator.dll"; DestDir: "{app}"; Flags: ignoreversion
