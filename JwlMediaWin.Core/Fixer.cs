@@ -156,6 +156,12 @@
             var mainHandle = (IntPtr)result.FindWindowResult.MainMediaWindow.Current.NativeWindowHandle;
             var coreHandle = (IntPtr)result.FindWindowResult.CoreMediaWindow.Current.NativeWindowHandle;
 
+            // The Sleep is an attempt to fix #5 (where media window is shown on primary display).
+            // My assumption is that the media window appears first on the same 
+            // display as JWL and is then moved to the secondary display, and the "rect = "
+            // call below retrieves this initial position!
+            Thread.Sleep(1000);
+
             NativeMethods.SetForegroundWindow(coreHandle);
 
             var rect = result.FindWindowResult.MainMediaWindow.Current.BoundingRectangle;
