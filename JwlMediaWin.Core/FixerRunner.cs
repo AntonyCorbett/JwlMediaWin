@@ -50,6 +50,11 @@
 
         private static int GetIntervalMilliseconds(FixerStatus results)
         {
+            if (results.FindWindowResult == null)
+            {
+                return IntervalSecsWatchingForWindow * 1000;
+            }
+
             return results.FindWindowResult.JwlRunning
                 ? IntervalSecsWatchingForProcess * 1000
                 : IntervalSecsWatchingForWindow * 1000;
