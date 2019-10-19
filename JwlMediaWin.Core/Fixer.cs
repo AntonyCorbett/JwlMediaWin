@@ -98,11 +98,20 @@
                     return false;
 
                 case JwLibAppTypes.JwLibrary:
-                    return GetWebView(coreMediaWindow) != null;
+                    return GetWebView(coreMediaWindow) != null || 
+                           HasNoChildren(coreMediaWindow);
 
                 case JwLibAppTypes.JwLibrarySignLanguage:
                     return GetImageControl(coreMediaWindow) != null;
             }
+        }
+
+        private static bool HasNoChildren(AutomationElement coreMediaWindow)
+        {
+            // this is the case when JWL is configured _not_ to show the year text
+            return coreMediaWindow.FindFirst(
+                       TreeScope.Children, 
+                       new PropertyCondition(AutomationElement.IsEnabledProperty, true)) == null;
         }
 
         private static AutomationElement GetJwlCoreWindow(AutomationElement mainJwlWindow, string caption)
