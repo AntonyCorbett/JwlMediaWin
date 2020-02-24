@@ -16,5 +16,21 @@
 
         [DllImport("user32.dll")]
         internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        internal static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+        internal static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            return IntPtr.Size == 8 
+                ? SetWindowLongPtr64(hWnd, nIndex, dwNewLong) 
+                : new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
+        }
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+        private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
     }
 }

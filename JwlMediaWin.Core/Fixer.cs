@@ -213,7 +213,18 @@
 
             result.IsFixed = true;
 
+            EnsureWindowIsNonSizeable(mainHandle);
+
             return result;
+        }
+
+        private void EnsureWindowIsNonSizeable(IntPtr mainHandle)
+        {
+            const int GWL_STYLE = -16;
+            const int WS_SIZEBOX = 0x040000;
+
+            var val = (int)NativeMethods.GetWindowLongPtr(mainHandle, GWL_STYLE) & ~WS_SIZEBOX;
+            NativeMethods.SetWindowLongPtr(mainHandle, GWL_STYLE, (IntPtr)val);
         }
 
         private FindWindowResult GetMediaAndCoreWindow(
