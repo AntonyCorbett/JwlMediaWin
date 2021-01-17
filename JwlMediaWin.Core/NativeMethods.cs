@@ -17,6 +17,10 @@
         [DllImport("user32.dll")]
         internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         internal static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 

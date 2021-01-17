@@ -195,13 +195,21 @@
             const uint NoCopyBitsFlag = 0x0100;
             const uint NoSendChangingFlag = 0x0400;
 
-            const int adjustment = 34;
-            const int border = 8;
+            // the window used to have a non-transparent titlebar so we could
+            // just remove it by trimming the top margin...
+            // const int adjustment = 34; // adjustment for titlebar
+            // const int border = 8; // adjustment for borders
+
+            // ... but in Jan 2021 the title bar became transparent and so 
+            // it needed to be retained. However, the command buttons top right
+            // can be 'removed' (see below)
+            const int adjustment = 1; // adjustment for titlebar
+            const int border = 8; // adjustment for borders
 
             // this Sleep is definitely required. Without it, the media window may remain
             // on the primary display (i.e. the SetWindowPos call is ineffective). See #5
             Thread.Sleep(500);
-
+            
             NativeMethods.SetWindowPos(
                 mainHandle,
                 insertAfterValue,
@@ -214,6 +222,15 @@
             result.IsFixed = true;
 
             EnsureWindowIsNonSizeable(mainHandle);
+
+            // to 'remove' the command buttons from the transparent title bar
+            // we move focus to the main JWL window and then disable the media
+            // window meaning it can no longer gain focus via mouse click. This
+            // doesn't prevent the button being displayed if you alt-tab to the
+            // media window but it is a small change that is generally helpful.
+
+            NativeMethods.SetForegroundWindow(coreHandle);
+            NativeMethods.EnableWindow(mainHandle, false);
 
             return result;
         }

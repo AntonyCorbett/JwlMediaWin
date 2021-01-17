@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace JwlMediaWin.ViewModel
+﻿namespace JwlMediaWin.ViewModel
 {
+    using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows;
