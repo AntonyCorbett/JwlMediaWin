@@ -142,10 +142,29 @@
             return (bool)item.GetCurrentPropertyValue(AutomationElement.IsTransformPatternAvailableProperty);
         }
 
+        private static bool HasWindowPattern(AutomationElement item)
+        {
+            return (bool)item.GetCurrentPropertyValue(AutomationElement.IsWindowPatternAvailableProperty);
+        }
+
         private static bool IsWindowTopMost(AutomationElement item)
         {
-            var windowPattern = (WindowPattern)item.GetCurrentPattern(WindowPattern.Pattern);
-            return windowPattern.Current.IsTopmost;
+            if (!HasWindowPattern(item))
+            {
+                return false;
+            }
+
+            if (item.GetCurrentPattern(WindowPattern.Pattern) is WindowPattern wp)
+            {
+                return wp.Current.IsTopmost;
+            }
+
+            return false;
+        }
+        
+        private static bool IsAJwlWindow(AutomationElement item)
+        {
+            return item.Current.Name?.Contains(JwLibCaption) ?? false;
         }
 
         private FixerStatus ExecuteInternal(
@@ -189,7 +208,7 @@
 
             var insertAfterValue = topMost
                 ? new IntPtr(-1)
-                : new IntPtr(0);
+                : new IntPtr(-2);
 
             const uint ShowWindowFlag = 0x0040;
             const uint NoCopyBitsFlag = 0x0100;
@@ -249,7 +268,7 @@
         {
             var result = new FindWindowResult();
 
-            if (!Process.GetProcessesByName(processName).Any())
+            if (Process.GetProcessesByName(processName).Length == 0)
             {
                 return result;
             }
@@ -305,20 +324,22 @@
 
         private MediaAndCoreWindows GetMediaAndCoreWindowsInternal(JwLibAppTypes appType, string caption)
         {
-            var candidates = _cachedDesktopElement.FindAll(
+            // get all direct child windows of the desktop
+            var candidateMediaWindows = _cachedDesktopElement.FindAll(
                 TreeScope.Children,
-                new PropertyCondition(AutomationElement.NameProperty, caption));
+                new PropertyCondition(AutomationElement.IsEnabledProperty, true));
 
-            if (candidates.Count == 0)
+            if (candidateMediaWindows.Count == 0)
             {
                 return null;
             }
 
-            foreach (AutomationElement candidate in candidates)
+            foreach (AutomationElement candidateMediaWindow in candidateMediaWindows)
             {
-                if (IsWindowTopMost(candidate))
+                // the media window is topmost and has "JW Library" in its Name
+                if (IsWindowTopMost(candidateMediaWindow) && IsAJwlWindow(candidateMediaWindow))
                 {
-                    var coreWindow = GetJwlCoreWindow(candidate, caption);
+                    var coreWindow = GetJwlCoreWindow(candidateMediaWindow, caption);
                     if (coreWindow != null)
                     {
                         if (IsCorrectCoreWindow(appType, coreWindow))
@@ -326,7 +347,7 @@
                             return new MediaAndCoreWindows
                             {
                                 CoreWindow = coreWindow,
-                                MediaWindow = candidate
+                                MediaWindow = candidateMediaWindow
                             };
                         }
                     }
