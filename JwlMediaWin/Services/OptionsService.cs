@@ -2,13 +2,15 @@
 {
     using System;
     using System.IO;
-    using JwlMediaWin.Models;
+    using Models;
     using Newtonsoft.Json;
     using Serilog;
 
-    internal class OptionsService : IOptionsService
+    // ReSharper disable once ClassNeverInstantiated.Global
+    internal sealed class OptionsService : IOptionsService
     {
-        private readonly int _optionsVersion = 1;
+        private const int _optionsVersion = 1;
+
         private Options _options;
         private string _optionsFilePath;
 
@@ -64,9 +66,9 @@
             }
             else
             {
-                using (StreamReader file = File.OpenText(_optionsFilePath))
+                using (var file = File.OpenText(_optionsFilePath))
                 {
-                    JsonSerializer serializer = new JsonSerializer();
+                    var serializer = new JsonSerializer();
                     _options = (Options)serializer.Deserialize(file, typeof(Options));
                 }
             }
@@ -82,7 +84,7 @@
         {
             if (_options != null)
             {
-                using (StreamWriter file = File.CreateText(_optionsFilePath))
+                using (var file = File.CreateText(_optionsFilePath))
                 {
                     var serializer = new JsonSerializer { Formatting = Formatting.Indented };
                     serializer.Serialize(file, _options);

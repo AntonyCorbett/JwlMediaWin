@@ -2,7 +2,7 @@
 {
     using System.Windows.Automation;
 
-    internal class MediaAndCoreWindows
+    internal sealed class MediaAndCoreWindows
     {
         /// <summary>
         /// Gets or sets the JWL media window.

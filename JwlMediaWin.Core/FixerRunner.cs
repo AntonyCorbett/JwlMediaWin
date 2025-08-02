@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading;
-    using JwlMediaWin.Core.Models;
+    using Models;
 
     //// Note that "JW Library" is a registered trademark of
     //// Watch Tower Bible and Tract Society of Pennsylvania.

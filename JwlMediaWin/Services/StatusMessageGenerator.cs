@@ -2,7 +2,7 @@
 {
     using JwlMediaWin.Core.Models;
     
-    internal class StatusMessageGenerator
+    internal sealed class StatusMessageGenerator
     {
         private string _previousMessage;
 

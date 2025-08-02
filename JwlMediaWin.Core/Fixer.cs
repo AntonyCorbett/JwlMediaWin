@@ -2,15 +2,14 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Linq;
     using System.Threading;
     using System.Windows.Automation;
-    using JwlMediaWin.Core.Models;
+    using Models;
     using WindowsInput;
     using WindowsInput.Native;
 
     // ReSharper disable once UnusedMember.Global
-    internal class Fixer
+    internal sealed class Fixer
     {
         private const string JwLibProcessName = "JWLibrary";
         private const string JwLibCaption = "JW Library";
@@ -68,6 +67,11 @@
 
         private static bool ConvertMediaWindow(AutomationElement mainMediaWindow)
         {
+            if (mainMediaWindow == null)
+            {
+                return false;
+            }
+
             var inputSim = new InputSimulator();
 
             inputSim.Keyboard.ModifiedKeyStroke(
@@ -90,6 +94,11 @@
 
         private static bool IsCorrectCoreWindow(JwLibAppTypes appType, AutomationElement coreMediaWindow)
         {
+            if (coreMediaWindow == null)
+            {
+                return false;
+            }
+
             switch (appType)
             {
                 default:
@@ -108,6 +117,11 @@
 
         private static bool HasNoChildren(AutomationElement coreMediaWindow)
         {
+            if (coreMediaWindow == null)
+            {
+                return false;
+            }
+
             // this is the case when JWL is configured _not_ to show the year text
             return coreMediaWindow.FindFirst(
                        TreeScope.Children, 
@@ -116,7 +130,12 @@
 
         private static AutomationElement GetJwlCoreWindow(AutomationElement mainJwlWindow, string caption)
         {
-            Condition condition = new AndCondition(
+            if (mainJwlWindow == null)
+            {
+                return null;
+            }
+
+            var condition = new AndCondition(
                 new PropertyCondition(AutomationElement.NameProperty, caption),
                 new PropertyCondition(AutomationElement.ClassNameProperty, "Windows.UI.Core.CoreWindow"));
 
@@ -125,6 +144,11 @@
 
         private static AutomationElement GetWebView(AutomationElement coreJwlWindow)
         {
+            if (coreJwlWindow == null)
+            {
+                return null;
+            }
+
             return coreJwlWindow.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.ClassNameProperty, "Microsoft.UI.Xaml.Controls.WebView2"));
@@ -132,6 +156,11 @@
 
         private static AutomationElement GetImageControl(AutomationElement coreJwlWindow)
         {
+            if (coreJwlWindow == null)
+            {
+                return null;
+            }
+    
             return coreJwlWindow.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.ClassNameProperty, "Image"));
@@ -139,11 +168,21 @@
 
         private static bool HasTransformPattern(AutomationElement item)
         {
+            if (item == null)
+            {
+                return false;
+            }
+
             return (bool)item.GetCurrentPropertyValue(AutomationElement.IsTransformPatternAvailableProperty);
         }
 
         private static bool HasWindowPattern(AutomationElement item)
         {
+            if (item == null)
+            {
+                return false;
+            }
+
             return (bool)item.GetCurrentPropertyValue(AutomationElement.IsWindowPatternAvailableProperty);
         }
 
@@ -154,7 +193,7 @@
                 return false;
             }
 
-            if (item.GetCurrentPattern(WindowPattern.Pattern) is WindowPattern wp)
+            if (item.TryGetCurrentPattern(WindowPattern.Pattern, out var patternObj) && patternObj is WindowPattern wp)
             {
                 return wp.Current.IsTopmost;
             }
@@ -164,7 +203,21 @@
         
         private static bool IsAJwlWindow(AutomationElement item)
         {
+            if (item == null)
+            {
+                return false;
+            }
+
             return item.Current.Name?.Contains(JwLibCaption) ?? false;
+        }
+
+        private static void EnsureWindowIsNonSizeable(IntPtr mainHandle)
+        {
+            const int GWL_STYLE = -16;
+            const int WS_SIZEBOX = 0x040000;
+
+            var val = (int)NativeMethods.GetWindowLongPtr(mainHandle, GWL_STYLE) & ~WS_SIZEBOX;
+            NativeMethods.SetWindowLongPtr(mainHandle, GWL_STYLE, (IntPtr)val);
         }
 
         private FixerStatus ExecuteInternal(
@@ -235,7 +288,7 @@
                 (int)rect.Left - border,
                 (int)rect.Top - adjustment,
                 (int)rect.Width + (border * 2),
-                (int)rect.Height + adjustment + border,
+                (int)rect.Height + (adjustment + border),
                 (int)(NoCopyBitsFlag | NoSendChangingFlag | ShowWindowFlag));
 
             result.IsFixed = true;
@@ -246,21 +299,11 @@
             // we move focus to the main JWL window and then disable the media
             // window meaning it can no longer gain focus via mouse click. This
             // doesn't prevent the button being displayed if you alt-tab to the
-            // media window but it is a small change that is generally helpful.
-
+            // media window, but it is a small change that is generally helpful.
             NativeMethods.SetForegroundWindow(coreHandle);
             NativeMethods.EnableWindow(mainHandle, false);
 
             return result;
-        }
-
-        private static void EnsureWindowIsNonSizeable(IntPtr mainHandle)
-        {
-            const int GWL_STYLE = -16;
-            const int WS_SIZEBOX = 0x040000;
-
-            var val = (int)NativeMethods.GetWindowLongPtr(mainHandle, GWL_STYLE) & ~WS_SIZEBOX;
-            NativeMethods.SetWindowLongPtr(mainHandle, GWL_STYLE, (IntPtr)val);
         }
 
         private FindWindowResult GetMediaAndCoreWindow(

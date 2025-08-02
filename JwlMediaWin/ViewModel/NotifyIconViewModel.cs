@@ -4,17 +4,18 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows;
+    using Core;
+    using Core.Models;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
     using Hardcodet.Wpf.TaskbarNotification;
-    using JwlMediaWin.Core;
-    using JwlMediaWin.Core.Models;
-    using JwlMediaWin.PubSubMessages;
-    using JwlMediaWin.Services;
+    using PubSubMessages;
     using Serilog;
+    using Services;
 
-    internal class NotifyIconViewModel : ViewModelBase
+    // ReSharper disable once ClassNeverInstantiated.Global
+    internal sealed class NotifyIconViewModel : ViewModelBase
     {
         private readonly IOptionsService _optionsService;
         private readonly FixerRunner _fixerRunner = new FixerRunner();
@@ -115,6 +116,21 @@
             }
         }
 
+        private static string GetAppName(JwLibAppTypes appType)
+        {
+            switch (appType)
+            {
+                case JwLibAppTypes.JwLibrary:
+                    return "JW Library";
+
+                case JwLibAppTypes.JwLibrarySignLanguage:
+                    return "JW Library Sign Language";
+
+                default:
+                    return "Unknown";
+            }
+        }
+
         private void ShowHelpPage()
         {
             Process.Start(@"https://github.com/AntonyCorbett/JwlMediaWin/wiki");
@@ -151,21 +167,6 @@
             return (DateTime.UtcNow - _restartTipLastShow).TotalMinutes > 1;
         }
 
-        private string GetAppName(JwLibAppTypes appType)
-        {
-            switch (appType)
-            {
-                case JwLibAppTypes.JwLibrary:
-                    return "JW Library";
-
-                case JwLibAppTypes.JwLibrarySignLanguage:
-                    return "JW Library Sign Language";
-
-                default:
-                    return "Unknown";
-            }
-        }
-
         private void HandleFixerRunnerStatusEvent(object sender, FixerStatusEventArgs e)
         {
             _isFixed = e.Status.IsFixed || (e.Status.FindWindowResult != null && e.Status.FindWindowResult.IsAlreadyFixed);
@@ -175,7 +176,7 @@
 
             if (msg != null)
             {
-                Log.Logger.Information(msg);
+                Log.Logger.Information("Status message: {Message}", msg);
 
                 if (e.Status.IsFixed)
                 {

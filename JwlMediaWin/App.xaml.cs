@@ -5,14 +5,14 @@
     using System.Windows;
     using GalaSoft.MvvmLight.Messaging;
     using Hardcodet.Wpf.TaskbarNotification;
-    using JwlMediaWin.PubSubMessages;
-    using JwlMediaWin.ViewModel;
+    using PubSubMessages;
     using Serilog;
+    using ViewModel;
 
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         private readonly string _appString = "JwlMediaWindowFixSoundBox";
         private Mutex _appMutex;
@@ -49,7 +49,7 @@
             base.OnExit(e);
         }
 
-        private void ConfigureLogger()
+        private static void ConfigureLogger()
         {
             string logsDirectory = FileUtils.GetLogFolder();
 
@@ -62,7 +62,7 @@
                 .CreateLogger();
 
             Log.Logger.Information("==== Launched ====");
-            Log.Logger.Information($"Version {VersionDetection.GetCurrentVersion()}");
+            Log.Logger.Information("Version {Version}", VersionDetection.GetCurrentVersion());
         }
 
         private bool AnotherInstanceRunning()

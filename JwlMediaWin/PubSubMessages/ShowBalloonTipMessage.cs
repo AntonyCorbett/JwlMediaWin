@@ -2,7 +2,7 @@
 {
     using Hardcodet.Wpf.TaskbarNotification;
 
-    internal class ShowBalloonTipMessage
+    internal sealed class ShowBalloonTipMessage
     {
         public string Title { get; set; }
 

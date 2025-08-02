@@ -2,9 +2,11 @@ namespace JwlMediaWin.ViewModel
 {
     using CommonServiceLocator;
     using GalaSoft.MvvmLight.Ioc;
-    using JwlMediaWin.Services;
+    using Services;
 
-    internal class ViewModelLocator
+#pragma warning disable U2U1001
+    internal sealed class ViewModelLocator
+#pragma warning restore U2U1001
     {
         public static NotifyIconViewModel MainViewModel => ServiceLocator.Current.GetInstance<NotifyIconViewModel>();
 
