@@ -127,7 +127,7 @@
         {
             return coreJwlWindow.FindFirst(
                 TreeScope.Children,
-                new PropertyCondition(AutomationElement.ClassNameProperty, "WebView"));
+                new PropertyCondition(AutomationElement.ClassNameProperty, "Microsoft.UI.Xaml.Controls.WebView2"));
         }
 
         private static AutomationElement GetImageControl(AutomationElement coreJwlWindow)
@@ -254,7 +254,7 @@
             return result;
         }
 
-        private void EnsureWindowIsNonSizeable(IntPtr mainHandle)
+        private static void EnsureWindowIsNonSizeable(IntPtr mainHandle)
         {
             const int GWL_STYLE = -16;
             const int WS_SIZEBOX = 0x040000;
