@@ -10,10 +10,10 @@
     -->
     
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
-        <MenuItem Header="Enable Fix - JW Library" 
+        <MenuItem Header="Enable Fix for JW Library" 
                   IsChecked="{Binding IsFixEnabledJwLib}"
                   IsCheckable="true" />
-        <MenuItem Header="Enable Fix - JW Library Sign Language" 
+        <MenuItem Header="Enable Fix for JW Library Sign Language" 
                   IsChecked="{Binding IsFixEnabledJwLibSign}"
                   IsCheckable="true" />
         <MenuItem Header="Keep on Top" 
@@ -21,7 +21,14 @@
                   IsCheckable="true"/>
         <MenuItem Header="Help" Command="{Binding ShowHelpPageCommand}" />
         <Separator />
-        <MenuItem Header="Stop JWL Media Fix" Command="{Binding ExitAppCommand}" />
+        <MenuItem Header="Close the Fixer application" Command="{Binding ExitAppCommand}" />
+        <Separator />
+        <TextBlock Text="{Binding VersionStringAndCopyright}" 
+                   Margin="0,5"
+                   Width="200"
+                   TextWrapping="Wrap"
+                   FontSize="10"
+                   HorizontalAlignment="Left" />
     </ContextMenu>
 
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->

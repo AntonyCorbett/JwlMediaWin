@@ -58,8 +58,8 @@
                     RaisePropertyChanged();
 
                     Log.Logger.Information(value
-                        ? "Enabled fix for JW Lib"
-                        : "Disabled fix for JW Lib");
+                        ? "Enabled fix for JW Library"
+                        : "Disabled fix for JW Library");
 
                     if (value)
                     {
@@ -83,8 +83,8 @@
                     RaisePropertyChanged();
 
                     Log.Logger.Information(value
-                        ? "Enabled fix for JW Lib Sign Language"
-                        : "Disabled fix for JW Lib Sign Language");
+                        ? "Enabled fix for JW Library Sign Language"
+                        : "Disabled fix for JW Library Sign Language");
 
                     if (value)
                     {
@@ -95,6 +95,10 @@
                 }
             }
         }
+
+        public string VersionStringAndCopyright => "version " + 
+                                       VersionDetection.GetCurrentVersionString() +
+                                       ". JW Library is a trademark of Watch Tower Bible and Tract Society of Pennsylvania";
 
         // ReSharper disable once UnusedMember.Global
         public bool IsKeepOnTopEnabled
