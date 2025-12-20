@@ -107,7 +107,8 @@
                     return false;
 
                 case JwLibAppTypes.JwLibrary:
-                    return GetWebView(coreMediaWindow) != null || 
+                    return GetWebView(coreMediaWindow) != null ||
+                           GetProgressRing(coreMediaWindow) != null ||
                            HasNoChildren(coreMediaWindow);
 
                 case JwLibAppTypes.JwLibrarySignLanguage:
@@ -152,6 +153,18 @@
             return coreJwlWindow.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.ClassNameProperty, "Microsoft.UI.Xaml.Controls.WebView2"));
+        }
+
+        private static AutomationElement GetProgressRing(AutomationElement coreJwlWindow)
+        {
+            if (coreJwlWindow == null)
+            {
+                return null;
+            }
+
+            return coreJwlWindow.FindFirst(
+                TreeScope.Children,
+                new PropertyCondition(AutomationElement.ClassNameProperty, "ProgressRing"));
         }
 
         private static AutomationElement GetImageControl(AutomationElement coreJwlWindow)
