@@ -19,7 +19,6 @@
 
         private readonly InputSimulator _inputSimulator = new InputSimulator();
 
-        private AutomationElement _cachedDesktopElement;
         private MediaAndCoreWindows _cachedWindowElements;
 
         /// <summary>
@@ -205,6 +204,41 @@
             NativeMethods.SetWindowLongPtr(mainHandle, NativeMethods.GWL_STYLE, (IntPtr)val);
         }
 
+        private static MediaAndCoreWindows GetMediaAndCoreWindowsInternal(JwLibAppTypes appType, string caption)
+        {
+            // get all direct child windows of the desktop
+            var candidateMediaWindows = AutomationElement.RootElement.FindAll(
+                TreeScope.Children,
+                new PropertyCondition(AutomationElement.IsEnabledProperty, true));
+
+            if (candidateMediaWindows.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (AutomationElement candidateMediaWindow in candidateMediaWindows)
+            {
+                // the media window is topmost and has "JW Library" in its Name
+                if (IsWindowTopMost(candidateMediaWindow) && IsAJwlWindow(candidateMediaWindow))
+                {
+                    var coreWindow = GetJwlCoreWindow(candidateMediaWindow, caption);
+                    if (coreWindow != null)
+                    {
+                        if (IsCorrectCoreWindow(appType, coreWindow))
+                        {
+                            return new MediaAndCoreWindows
+                            {
+                                CoreWindow = coreWindow,
+                                MediaWindow = candidateMediaWindow
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private bool ConvertMediaWindow(AutomationElement mainMediaWindow)
         {
             if (mainMediaWindow == null)
@@ -321,14 +355,6 @@
 
             result.JwlRunning = true;
 
-            CacheDesktopElement();
-            if (_cachedDesktopElement == null)
-            {
-                return result;
-            }
-
-            result.FoundDesktop = true;
-
             if (_cachedWindowElements == null)
             {
                 _cachedWindowElements = GetMediaAndCoreWindowsInternal(appType, caption);
@@ -355,60 +381,12 @@
                 {
                     // one of the windows has gone away so purge the cache...
                     _cachedWindowElements = null;
-                    _cachedDesktopElement = null;
 
-                    return new FindWindowResult
-                    {
-                        FoundDesktop = true,
-                        JwlRunning = true
-                    };
+                    return new FindWindowResult { JwlRunning = true };
                 }
             }
 
             return result;
-        }
-
-        private MediaAndCoreWindows GetMediaAndCoreWindowsInternal(JwLibAppTypes appType, string caption)
-        {
-            // get all direct child windows of the desktop
-            var candidateMediaWindows = _cachedDesktopElement.FindAll(
-                TreeScope.Children,
-                new PropertyCondition(AutomationElement.IsEnabledProperty, true));
-
-            if (candidateMediaWindows.Count == 0)
-            {
-                return null;
-            }
-
-            foreach (AutomationElement candidateMediaWindow in candidateMediaWindows)
-            {
-                // the media window is topmost and has "JW Library" in its Name
-                if (IsWindowTopMost(candidateMediaWindow) && IsAJwlWindow(candidateMediaWindow))
-                {
-                    var coreWindow = GetJwlCoreWindow(candidateMediaWindow, caption);
-                    if (coreWindow != null)
-                    {
-                        if (IsCorrectCoreWindow(appType, coreWindow))
-                        {
-                            return new MediaAndCoreWindows
-                            {
-                                CoreWindow = coreWindow,
-                                MediaWindow = candidateMediaWindow
-                            };
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private void CacheDesktopElement()
-        {
-            if (_cachedDesktopElement == null)
-            {
-                _cachedDesktopElement = AutomationElement.RootElement;
-            }
         }
     }
 }

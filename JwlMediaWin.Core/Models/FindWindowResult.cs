@@ -13,14 +13,6 @@
         public bool JwlRunning { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the desktop element has been found.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if found; otherwise, <c>false</c>.
-        /// </value>
-        public bool FoundDesktop { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the JWL media window has been found.
         /// </summary>
         /// <value>
