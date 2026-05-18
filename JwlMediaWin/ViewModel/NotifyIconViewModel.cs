@@ -30,7 +30,7 @@
 
             ExitAppCommand = new RelayCommand(Application.Current.Shutdown);
             ShowHelpPageCommand = new RelayCommand(ShowHelpPage);
-            
+
             ResetFixer();
 
             _fixerRunner.StatusEvent += HandleFixerRunnerStatusEvent;
@@ -90,13 +90,13 @@
                     {
                         IsFixEnabledJwLib = false;
                     }
-                    
+
                     ResetFixer();
                 }
             }
         }
 
-        public string VersionStringAndCopyright => "version " + 
+        public string VersionStringAndCopyright => "version " +
                                        VersionDetection.GetCurrentVersionString() +
                                        ". JW Library is a trademark of Watch Tower Bible and Tract Society of Pennsylvania";
 

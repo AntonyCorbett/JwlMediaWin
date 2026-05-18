@@ -4,7 +4,7 @@
     using System.Diagnostics;
     using System.Threading;
     using System.Windows.Automation;
-    using Models;
+    using JwlMediaWin.Core.Models;
     using WindowsInput;
     using WindowsInput.Native;
 
