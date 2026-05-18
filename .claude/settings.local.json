@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /d \"D:\\\\ProjectsPersonal\\\\JwlMediaWin\")",
+      "Bash(msbuild JwlMediaWin.sln /p:Configuration=Release /t:Build /v:minimal)",
+      "PowerShell(msbuild *)"
+    ]
+  }
+}

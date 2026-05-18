@@ -14,6 +14,10 @@
         public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
 
         [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
@@ -54,5 +58,21 @@
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
         private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct RECT
+        {
+            public int Left;
+
+            public int Top;
+
+            public int Right;
+
+            public int Bottom;
+
+            public int Width => Right - Left;
+
+            public int Height => Bottom - Top;
+        }
     }
 }

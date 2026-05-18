@@ -280,10 +280,13 @@
 
             var mainHandle = (IntPtr)result.FindWindowResult.MainMediaWindow.Current.NativeWindowHandle;
             var coreHandle = (IntPtr)result.FindWindowResult.CoreMediaWindow.Current.NativeWindowHandle;
-            
+
             NativeMethods.SetForegroundWindow(coreHandle);
 
-            var rect = result.FindWindowResult.MainMediaWindow.Current.BoundingRectangle;
+            // Use GetWindowRect (Win32) rather than BoundingRectangle (UIAutomation) so that
+            // the captured coordinates are in the same DPI-aware space as SetWindowPos,
+            // avoiding mismatches on multi-monitor setups with mixed DPI scaling.
+            NativeMethods.GetWindowRect(mainHandle, out var rect);
 
             result.FindWindowResult.CoreMediaWindow.SetFocus();
 
@@ -322,10 +325,10 @@
             NativeMethods.SetWindowPos(
                 mainHandle,
                 insertAfterValue,
-                (int)rect.Left - border,
-                (int)rect.Top - adjustment,
-                (int)rect.Width + (border * 2),
-                (int)rect.Height + (adjustment + border),
+                rect.Left - border,
+                rect.Top - adjustment,
+                rect.Width + (border * 2),
+                rect.Height + (adjustment + border),
                 (int)(NativeMethods.NoCopyBitsFlag | NativeMethods.NoSendChangingFlag));
 
             result.IsFixed = true;
