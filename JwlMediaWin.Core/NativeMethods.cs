@@ -5,6 +5,14 @@
 
     internal static class NativeMethods
     {
+        public const int GWL_STYLE = -16;
+        public const int WS_SIZEBOX = 0x040000;
+        public const uint NoCopyBitsFlag = 0x0100;
+        public const uint NoSendChangingFlag = 0x0400;
+
+        public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+
         [DllImport("user32.dll")]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -21,8 +29,12 @@
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        internal static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+        internal static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
+        {
+            return IntPtr.Size == 8
+                ? GetWindowLongPtr64(hWnd, nIndex)
+                : new IntPtr(GetWindowLong32(hWnd, nIndex));
+        }
 
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
@@ -30,6 +42,12 @@
                 ? SetWindowLongPtr64(hWnd, nIndex, dwNewLong) 
                 : new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
         }
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        private static extern int GetWindowLong32(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
+        private static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
         private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, int dwNewLong);

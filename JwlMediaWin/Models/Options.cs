@@ -1,6 +1,6 @@
 ﻿namespace JwlMediaWin.Models
 {
-    internal class Options
+    internal sealed class Options
     {
         public Options()
         {

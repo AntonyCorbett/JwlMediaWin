@@ -17,6 +17,8 @@
         private const string JwLibSignLanguageProcessName = "JWLibrary.Forms.UWP";
         private const string JwLibSignLanguageCaption = "JW Library Sign Language";
 
+        private readonly InputSimulator _inputSimulator = new InputSimulator();
+
         private AutomationElement _cachedDesktopElement;
         private MediaAndCoreWindows _cachedWindowElements;
 
@@ -63,33 +65,6 @@
             {
                 return new FixerStatus { ErrorUnknown = true };
             }
-        }
-
-        private static bool ConvertMediaWindow(AutomationElement mainMediaWindow)
-        {
-            if (mainMediaWindow == null)
-            {
-                return false;
-            }
-
-            var inputSim = new InputSimulator();
-
-            inputSim.Keyboard.ModifiedKeyStroke(
-                new[]
-                {
-                    VirtualKeyCode.LWIN,
-                    VirtualKeyCode.SHIFT
-                },
-                VirtualKeyCode.RETURN);
-
-            var counter = 0;
-            while (!HasTransformPattern(mainMediaWindow) && counter < 20)
-            {
-                Thread.Sleep(200);
-                ++counter;
-            }
-
-            return HasTransformPattern(mainMediaWindow);
         }
 
         private static bool IsCorrectCoreWindow(JwLibAppTypes appType, AutomationElement coreMediaWindow)
@@ -226,11 +201,33 @@
 
         private static void EnsureWindowIsNonSizeable(IntPtr mainHandle)
         {
-            const int GWL_STYLE = -16;
-            const int WS_SIZEBOX = 0x040000;
+            var val = (int)NativeMethods.GetWindowLongPtr(mainHandle, NativeMethods.GWL_STYLE) & ~NativeMethods.WS_SIZEBOX;
+            NativeMethods.SetWindowLongPtr(mainHandle, NativeMethods.GWL_STYLE, (IntPtr)val);
+        }
 
-            var val = (int)NativeMethods.GetWindowLongPtr(mainHandle, GWL_STYLE) & ~WS_SIZEBOX;
-            NativeMethods.SetWindowLongPtr(mainHandle, GWL_STYLE, (IntPtr)val);
+        private bool ConvertMediaWindow(AutomationElement mainMediaWindow)
+        {
+            if (mainMediaWindow == null)
+            {
+                return false;
+            }
+
+            _inputSimulator.Keyboard.ModifiedKeyStroke(
+                new[]
+                {
+                    VirtualKeyCode.LWIN,
+                    VirtualKeyCode.SHIFT
+                },
+                VirtualKeyCode.RETURN);
+
+            var counter = 0;
+            while (!HasTransformPattern(mainMediaWindow) && counter < 20)
+            {
+                Thread.Sleep(200);
+                ++counter;
+            }
+
+            return HasTransformPattern(mainMediaWindow);
         }
 
         private FixerStatus ExecuteInternal(
@@ -249,10 +246,7 @@
 
             var mainHandle = (IntPtr)result.FindWindowResult.MainMediaWindow.Current.NativeWindowHandle;
             var coreHandle = (IntPtr)result.FindWindowResult.CoreMediaWindow.Current.NativeWindowHandle;
-
-            // this Sleep is probably not needed
-            Thread.Sleep(1000);
-
+            
             NativeMethods.SetForegroundWindow(coreHandle);
 
             var rect = result.FindWindowResult.MainMediaWindow.Current.BoundingRectangle;
@@ -273,13 +267,9 @@
             }
 
             var insertAfterValue = topMost
-                ? new IntPtr(-1)
-                : new IntPtr(-2);
-
-            const uint ShowWindowFlag = 0x0040;
-            const uint NoCopyBitsFlag = 0x0100;
-            const uint NoSendChangingFlag = 0x0400;
-
+                ? NativeMethods.HWND_TOPMOST
+                : NativeMethods.HWND_NOTOPMOST;
+            
             // the window used to have a non-transparent titlebar so we could
             // just remove it by trimming the top margin...
             // const int adjustment = 34; // adjustment for titlebar
@@ -302,7 +292,7 @@
                 (int)rect.Top - adjustment,
                 (int)rect.Width + (border * 2),
                 (int)rect.Height + (adjustment + border),
-                (int)(NoCopyBitsFlag | NoSendChangingFlag | ShowWindowFlag));
+                (int)(NativeMethods.NoCopyBitsFlag | NativeMethods.NoSendChangingFlag));
 
             result.IsFixed = true;
 
