@@ -39,7 +39,7 @@ Source: "JwlMediaWin\bin\Release\CommonServiceLocator.dll"; DestDir: "{app}"; Fl
 Source: "JwlMediaWin\bin\Release\GalaSoft.MvvmLight.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "JwlMediaWin\bin\Release\GalaSoft.MvvmLight.Extras.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "JwlMediaWin\bin\Release\GalaSoft.MvvmLight.Platform.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "JwlMediaWin\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "JwlMediaWin\bin\Release\Hardcodet.NotifyIcon.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "JwlMediaWin\bin\Release\Interop.UIAutomationClient.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "JwlMediaWin\bin\Release\JwlMediaWin.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "JwlMediaWin\bin\Release\JwlMediaWin.exe"; DestDir: "{app}"; Flags: ignoreversion
