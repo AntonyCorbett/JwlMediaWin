@@ -45,11 +45,11 @@
 
                 switch (appType)
                 {
+                    default:
+                    // ReSharper disable once RedundantCaseLabel
                     case JwLibAppTypes.None:
                         throw new Exception("Expected app type!");
 
-                    default:
-                    // ReSharper disable once RedundantCaseLabel
                     case JwLibAppTypes.JwLibrary:
                         processName = JwLibProcessName;
                         caption = JwLibCaption;
@@ -67,9 +67,9 @@
             {
                 return new FixerStatus { ErrorIsTransitioning = true };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new FixerStatus { ErrorUnknown = true };
+                return new FixerStatus { ErrorUnknown = true, UnknownException = ex };
             }
         }
 

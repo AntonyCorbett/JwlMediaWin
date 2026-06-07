@@ -1,5 +1,7 @@
 ﻿namespace JwlMediaWin.Core.Models
 {
+    using System;
+
     public class FixerStatus
     {
         /// <summary>
@@ -41,5 +43,13 @@
         ///   <c>true</c> if there was an unknown error unknown; otherwise, <c>false</c>.
         /// </value>
         public bool ErrorUnknown { get; set; }
+
+        /// <summary>
+        /// Gets or sets the exception that caused <see cref="ErrorUnknown"/>, if any.
+        /// </summary>
+        /// <value>
+        /// The exception, for diagnostic/logging purposes. May be <c>null</c>.
+        /// </value>
+        public Exception UnknownException { get; set; }
     }
 }

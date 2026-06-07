@@ -175,6 +175,11 @@
         {
             _isFixed = e.Status.IsFixed || (e.Status.FindWindowResult != null && e.Status.FindWindowResult.IsAlreadyFixed);
 
+            if (e.Status.ErrorUnknown && e.Status.UnknownException != null)
+            {
+                Log.Logger.Error(e.Status.UnknownException, "Unknown error in fixer");
+            }
+
             var appName = GetAppName(_fixerRunner.AppType);
             var msg = _statusMessageGenerator.Generate(e.Status, appName);
 
