@@ -48,7 +48,13 @@
             }
         }
 
-        private static int GetIntervalMilliseconds(FixerStatus results)
+        /// <summary>
+        /// Determines how long to wait before the next poll, based on the outcome
+        /// of the last "fix" attempt (e.g. polling faster while JWL is running).
+        /// </summary>
+        /// <param name="results">The result of the last "fix" attempt.</param>
+        /// <returns>The interval, in milliseconds, to wait before the next poll.</returns>
+        internal static int GetIntervalMilliseconds(FixerStatus results)
         {
             if (results.FindWindowResult == null)
             {
