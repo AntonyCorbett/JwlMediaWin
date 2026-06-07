@@ -3,7 +3,9 @@
     "allow": [
       "Bash(cd /d \"D:\\\\ProjectsPersonal\\\\JwlMediaWin\")",
       "Bash(msbuild JwlMediaWin.sln /p:Configuration=Release /t:Build /v:minimal)",
-      "PowerShell(msbuild *)"
+      "PowerShell(msbuild *)",
+      "Bash(MSBuild.exe JwlMediaWin.Core/JwlMediaWin.Core.csproj /p:Configuration=Release /nologo /v:minimal)",
+      "PowerShell(MSBuild.exe \"JwlMediaWin.Core\\\\JwlMediaWin.Core.csproj\" /p:Configuration=Release /nologo /v:minimal)"
     ]
   }
 }

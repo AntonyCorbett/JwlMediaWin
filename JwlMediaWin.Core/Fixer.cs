@@ -17,9 +17,16 @@
         private const string JwLibSignLanguageProcessName = "JWLibrary.Forms.UWP";
         private const string JwLibSignLanguageCaption = "JW Library Sign Language";
 
+        // how long to wait after sending the "convert" key combo before
+        // sending it again. Without this cooldown, a slow-to-register
+        // conversion could be re-triggered on the next poll, toggling the
+        // window back to its original UWP state.
+        private static readonly TimeSpan ConversionRetryCooldown = TimeSpan.FromSeconds(10);
+
         private readonly InputSimulator _inputSimulator = new InputSimulator();
 
         private MediaAndCoreWindows _cachedWindowElements;
+        private DateTime? _lastConversionAttemptUtc;
 
         /// <summary>
         /// Executes the "fixer". Finds the JWL media window and fixes it.
@@ -246,13 +253,24 @@
                 return false;
             }
 
-            _inputSimulator.Keyboard.ModifiedKeyStroke(
-                new[]
-                {
-                    VirtualKeyCode.LWIN,
-                    VirtualKeyCode.SHIFT
-                },
-                VirtualKeyCode.RETURN);
+            if (HasTransformPattern(mainMediaWindow))
+            {
+                return true;
+            }
+
+            var now = DateTime.UtcNow;
+            if (_lastConversionAttemptUtc == null || now - _lastConversionAttemptUtc.Value >= ConversionRetryCooldown)
+            {
+                _lastConversionAttemptUtc = now;
+
+                _inputSimulator.Keyboard.ModifiedKeyStroke(
+                    new[]
+                    {
+                        VirtualKeyCode.LWIN,
+                        VirtualKeyCode.SHIFT
+                    },
+                    VirtualKeyCode.RETURN);
+            }
 
             var counter = 0;
             while (!HasTransformPattern(mainMediaWindow) && counter < 20)
@@ -397,6 +415,7 @@
                 {
                     // one of the windows has gone away so purge the cache...
                     _cachedWindowElements = null;
+                    _lastConversionAttemptUtc = null;
 
                     return new FindWindowResult { JwlRunning = true };
                 }
