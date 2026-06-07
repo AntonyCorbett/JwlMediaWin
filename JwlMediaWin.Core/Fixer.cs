@@ -346,15 +346,28 @@
             return result;
         }
 
+        private static int GetProcessCount(string processName)
+        {
+            var processes = Process.GetProcessesByName(processName);
+            var result = processes.Length;
+
+            foreach (var process in processes)
+            {
+                process?.Dispose();
+            }
+
+            return result;
+        }
+
         private FindWindowResult GetMediaAndCoreWindow(
             JwLibAppTypes appType, string processName, string caption)
         {
             var result = new FindWindowResult();
 
-            if (Process.GetProcessesByName(processName).Length == 0)
+            if (GetProcessCount(processName) == 0)
             {
                 return result;
-            }
+            } 
 
             result.JwlRunning = true;
 
