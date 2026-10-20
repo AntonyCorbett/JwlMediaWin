@@ -20,6 +20,11 @@ If you just want to install the application, please download the [JwlMediaWinSet
 
 See the [wiki](https://github.com/AntonyCorbett/JwlMediaWin/wiki) for basic instructions and for information on where to get further help.
 
+### Updates
+JwlMediaWin checks GitHub Releases once a day for a newer version (this can be turned off in the tray menu, which also has a "Check for Updates Now" item). When an update is available, choose "Install Update" from the tray menu. The app downloads `JwlMediaWinSetup.exe`, verifies its size and the SHA-256 digest published by GitHub, and runs the installer (you will see a UAC prompt). The app then restarts automatically.
+
+For maintainers: the release tag must be the 4-part version (e.g. `1.1.0.7`) and the release asset must be named `JwlMediaWinSetup.exe`.
+
 ### License, etc
 
 JwlMediaWin is Copyright &copy; 2019 Antony Corbett and other contributors under the [MIT license](LICENSE). NotifyIconWpf (Philipp Sumi) is used under the Code Project Open License (CPOL) 1.02. InputSimulator (Michael Noonan, Theodoros Chatzigiannakis) is used under Microsoft Public License (MS-PL). Newtonsoft.Json (James Newton-King) is used under MIT. UIAComWrapperX (Techno Scavenger) is used unde MIT. GalaSoft MVVM Light (Laurent Bugnion et al) is used under MIT. Serilog is used under the Apache License Version 2.0, January 2004.

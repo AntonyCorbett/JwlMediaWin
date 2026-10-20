@@ -61,4 +61,11 @@ UseRelativePaths=True
 
 [Run]
 Filename: "{app}\JwlMediaWin.exe"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\JwlMediaWin.exe"; Flags: nowait runasoriginaluser; Check: IsUpdaterRun
+
+[Code]
+function IsUpdaterRun: Boolean;
+begin
+  Result := ExpandConstant('{param:updater|0}') = '1';
+end;
 

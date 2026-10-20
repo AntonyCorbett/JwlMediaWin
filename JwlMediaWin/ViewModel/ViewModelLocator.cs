@@ -15,6 +15,7 @@ namespace JwlMediaWin.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<IOptionsService, OptionsService>();
+            SimpleIoc.Default.Register<IUpdateService, UpdateService>();
 
             SimpleIoc.Default.Register<NotifyIconViewModel>();
         }

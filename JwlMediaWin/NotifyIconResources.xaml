@@ -9,6 +9,8 @@
         reuse the same context menu (which is a resource) again (which will have its DataContext set to the old TaskbarIcon)
     -->
     
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
         <MenuItem Header="Enable Fix for JW Library" 
                   IsChecked="{Binding IsFixEnabledJwLib}"
@@ -19,6 +21,13 @@
         <MenuItem Header="Keep on Top" 
                   IsChecked="{Binding IsKeepOnTopEnabled}"
                   IsCheckable="true"/>
+        <MenuItem Header="{Binding UpdateMenuHeader}"
+                  Command="{Binding InstallUpdateCommand}"
+                  Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <MenuItem Header="Check for Updates Now" Command="{Binding CheckForUpdatesNowCommand}" />
+        <MenuItem Header="Check for Updates Automatically"
+                  IsChecked="{Binding IsAutoUpdateCheckEnabled}"
+                  IsCheckable="true" />
         <MenuItem Header="Help" Command="{Binding ShowHelpPageCommand}" />
         <Separator />
         <MenuItem Header="Close the Fixer application" Command="{Binding ExitAppCommand}" />
